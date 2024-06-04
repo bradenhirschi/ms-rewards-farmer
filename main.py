@@ -11,7 +11,6 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-import pandas as pd
 import psutil
 
 from src import (
@@ -188,8 +187,9 @@ def setupAccounts() -> list:
 
 def executeBot(currentAccount, args: argparse.Namespace):
     logging.info(
-        f'********************{currentAccount.get("username", "")}********************'
+        f"********************{currentAccount.get('username', '')}********************"
     )
+    
     accountPointsCounter = 0
     remainingSearches = 0
     remainingSearchesM = 0
@@ -200,10 +200,10 @@ def executeBot(currentAccount, args: argparse.Namespace):
         accountPointsCounter = Login(desktopBrowser).login()
         startingPoints = accountPointsCounter
         if startingPoints == "Locked":
-            utils.send_notification("🚫 Account is locked", currentAccount["username"])
+            Utils.send_notification("🚫 Account is Locked", currentAccount["username"])
             return 0
         if startingPoints == "Verify":
-            utils.send_notification("❗ Account needs to be verified", currentAccount["username"])
+            Utils.send_notification("❗️ Account needs to be verified", currentAccount["username"])
             return 0
         logging.info(
             f"[POINTS] You have {utils.formatNumber(accountPointsCounter)} points on your account"
@@ -211,6 +211,7 @@ def executeBot(currentAccount, args: argparse.Namespace):
         DailySet(desktopBrowser).completeDailySet()
         PunchCards(desktopBrowser).completePunchCards()
         MorePromotions(desktopBrowser).completeMorePromotions()
+        # VersusGame(desktopBrowser).completeVersusGame()
         (
             remainingSearches,
             remainingSearchesM,
@@ -264,11 +265,11 @@ def executeBot(currentAccount, args: argparse.Namespace):
         )
         goalNotifier = f"🎯 Goal reached: {(utils.formatNumber((accountPointsCounter / goalPoints) * 100))}% ({goalTitle})"
 
-    utils.send_notification(
+    Utils.send_notification(
         "Daily Points Update",
         "\n".join(
             [
-                f"👤 Account: {account['username']}",
+                f"👤 Account: {currentAccount.get('username')}",
                 f"⭐️ Points earned today: {utils.formatNumber(accountPointsCounter - startingPoints)}",
                 f"💰 Total points: {utils.formatNumber(accountPointsCounter)}",
                 goalNotifier,
